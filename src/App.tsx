@@ -21,6 +21,11 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement === inputRef.current) return
+      if (e.key === "Escape") {
+        setKeystrokes([])
+        setPlaceholderText(placeholderBase)
+        return
+      }
       if (e.key === "/") {
         e.preventDefault()
         inputRef.current?.focus()
@@ -77,7 +82,7 @@ export default function App() {
         <div className="flex flex-row gap-8">
           {
             bookmarks.map((bookmark, index) => (
-              <a key={index} href={bookmark.url} className="hover:underline">{formatBookmarkTitle(bookmark)}</a>
+              <a key={index} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>
             ))
           }
         </div>
