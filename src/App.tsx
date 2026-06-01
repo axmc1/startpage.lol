@@ -16,8 +16,8 @@ export default function App() {
   const [placeholderText, setPlaceholderText] = useState(placeholderBase)
   const [keystrokes, setKeystrokes] = useState([] as string[])
   const bookmarks: Bookmark[] = [
-    { name: "hackernews", url: "https://news.ycombinator.com/", icon: "", shortcut: ["h", "n"] },
-    { name: "gitea", url: "https://git.lunanet.lol", icon: "", shortcut: ["g", "t"] },
+    { name: "hackernews", url: "https://news.ycombinator.com/", icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg", shortcut: ["h", "n"] },
+    { name: "gitea", url: "https://git.lunanet.lol", icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gitea.svg", shortcut: ["g", "t"] },
     { name: "youtube", url: "https://youtube.com", icon: "", shortcut: ["y", "t"] },
   ]
 
@@ -82,10 +82,13 @@ export default function App() {
       <div className="flex flex-col px-96 py-64 w-full">
         <h1 className="text-white text-5xl italic">{headerText}</h1>
         <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText} />
-        <div className="flex flex-row gap-8">
+        <div className="flex flex-row gap-4">
           {
             bookmarks.map((bookmark, index) => (
-              <a key={index} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>
+              <div className="flex flex-row items-center gap-2">
+                <img src={bookmark.icon} className="h-4"/>
+                <a key={index} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>
+              </div>
             ))
           }
         </div>
