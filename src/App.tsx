@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { getRandomText } from "./data/headerTexts";
 
 interface Bookmark {
   name: string
@@ -6,6 +7,8 @@ interface Bookmark {
   icon: string
   shortcut: string[]
 }
+
+const headerText = getRandomText()
 
 export default function App() {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -77,7 +80,7 @@ export default function App() {
   return (
     <div className="bg-[#0a0a0a] flex h-screen w-full">
       <div className="flex flex-col px-96 py-64 w-full">
-        <h1 className="text-white text-5xl italic">heyo</h1>
+        <h1 className="text-white text-5xl italic">{headerText}</h1>
         <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText} />
         <div className="flex flex-row gap-8">
           {
