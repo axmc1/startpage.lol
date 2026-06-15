@@ -1,29 +1,31 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { getRandomText } from "./data/headerTexts";
+import { getRandomHeaderText, getBookmarks, getSearchEngine } from "./helpers";
+import type { Bookmark } from "./types";
 
-interface Bookmark {
-  name: string
-  url: string
-  icon: string
-  shortcut: string[]
-}
-
-const headerText = getRandomText()
+const headerText = getRandomHeaderText()
+const bookmarks = getBookmarks()
+const searchEngine = getSearchEngine()
 
 export default function App() {
   const inputRef = useRef<HTMLInputElement>(null)
   const placeholderBase = "press / to search"
   const [placeholderText, setPlaceholderText] = useState(placeholderBase)
   const [keystrokes, setKeystrokes] = useState([] as string[])
-  const bookmarks: Bookmark[] = [
-    { name: "hackernews", url: "https://news.ycombinator.com/", icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg", shortcut: ["h", "n"] },
-    { name: "gitea", url: "https://git.lunanet.lol", icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gitea.svg", shortcut: ["g", "t"] },
-    { name: "youtube", url: "https://youtube.com", icon: "", shortcut: ["y", "t"] },
-  ]
+
+  function Search() {
+    const query = inputRef.current?.value
+    if (!query) return
+    setPlaceholderText(`Searching with ${searchEngine.name}..`)
+    window.location.href = searchEngine.url.replace("%s", encodeURIComponent(query))
+  }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement === inputRef.current) return
+      const focusedSearch = document.activeElement === inputRef.current
+      if (focusedSearch && e.key === "Enter") {
+        Search()
+        return
+      }
       if (e.key === "Escape") {
         setKeystrokes([])
         setPlaceholderText(placeholderBase)
@@ -48,7 +50,7 @@ export default function App() {
             setPlaceholderText(`FailFast: No more matching shortcuts [${nextKeystrokes.join(",")}]`)
             setTimeout(() => {
               setPlaceholderText(placeholderBase)
-            }, 1000)
+            }, 1500)
           }
           return
         }
@@ -78,10 +80,9 @@ export default function App() {
   }
 
   return (
-    <div className="bg-[#0a0a0a] flex h-screen w-full">
-      <div className="flex flex-col px-96 py-64 w-full">
+    <div className="bg-[#0a0a0a] flex h-screen w-full flex-col px-96 py-64">
         <h1 className="text-white text-5xl italic">{headerText}</h1>
-        <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText} />
+        <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText}/>
         <div className="flex flex-row gap-4">
           {
             bookmarks.map((bookmark, index) => (
@@ -93,6 +94,5 @@ export default function App() {
           }
         </div>
       </div>
-    </div>
   );
 }

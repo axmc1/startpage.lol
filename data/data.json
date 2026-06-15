@@ -1,0 +1,17 @@
+{
+  "headerTexts": [
+    "heyo",
+    "mes amis!",
+    "don't push on fridays",
+    "if yer aunt had balls, she'd be your uncle, but she doesn't, so she's not"
+  ],
+  "bookmarks": [
+    { "name": "hackernews", "url": "https://news.ycombinator.com/", "icon": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg", "shortcut": ["h", "n"] },
+    { "name": "gitea", "url": "https://git.lunanet.lol", "icon": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gitea.svg", "shortcut": ["g", "t"] },
+    { "name": "youtube", "url": "https://youtube.com", "icon": "", "shortcut": ["y", "t"] }
+  ],
+  "searchEngine": {
+    "name": "Brave Search",
+    "url": "https://search.brave.com/search?q=%s"
+  }
+}
