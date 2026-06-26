@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { getRandomHeaderText, getBookmarks, getSearchEngine } from "./helpers";
 import type { Bookmark } from "./types";
-
-const headerText = getRandomHeaderText()
-const bookmarks = getBookmarks()
-const searchEngine = getSearchEngine()
+import { useStore } from "./store";
 
 export default function App() {
+  const data = useStore((state) => state.data)
+  const [headerText] = useState(() => useStore.getState().getRandomHeaderText())
   const inputRef = useRef<HTMLInputElement>(null)
   const placeholderBase = "press / to search"
   const [placeholderText, setPlaceholderText] = useState(placeholderBase)
@@ -15,8 +13,8 @@ export default function App() {
   function Search() {
     const query = inputRef.current?.value
     if (!query) return
-    setPlaceholderText(`Searching with ${searchEngine.name}..`)
-    window.location.href = searchEngine.url.replace("%s", encodeURIComponent(query))
+    setPlaceholderText(`Searching with ${data.searchEngine.name}..`)
+    window.location.href = data.searchEngine.url.replace("%s", encodeURIComponent(query))
   }
 
   useEffect(() => {
@@ -36,14 +34,14 @@ export default function App() {
         inputRef.current?.focus()
       } else if (e.key.length === 1) {
         const nextKeystrokes = [...keystrokes, e.key]
-        const match = bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
+        const match = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
         if (match) {
           setKeystrokes([])
           setPlaceholderText(`Redirecting to ${match.name}...`)
           window.location.href = match.url
           return
         }
-        const sequenceMatch = bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
+        const sequenceMatch = data.bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
         if (sequenceMatch === undefined) {
           setKeystrokes([])
           if (nextKeystrokes.length != 1) {
@@ -85,7 +83,7 @@ export default function App() {
         <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText}/>
         <div className="flex flex-row gap-4">
           {
-            bookmarks.map((bookmark, index) => (
+            data.bookmarks.map((bookmark, index) => (
               <div className="flex flex-row items-center gap-2">
                 <img src={bookmark.icon} className="h-4"/>
                 <a key={index} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>

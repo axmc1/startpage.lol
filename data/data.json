@@ -3,7 +3,7 @@
     "heyo",
     "mes amis!",
     "don't push on fridays",
-    "if yer aunt had balls, she'd be your uncle, but she doesn't, so she's not"
+    "{{header_text}}"
   ],
   "bookmarks": [
     { "name": "hackernews", "url": "https://news.ycombinator.com/", "icon": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg", "shortcut": ["h", "n"] },
