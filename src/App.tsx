@@ -78,10 +78,10 @@ export default function App() {
   }
 
   return (
-    <div className="bg-[#0a0a0a] flex h-screen w-full flex-col px-96 py-64">
-        <h1 className="text-white text-5xl italic">{headerText}</h1>
+    <div className="bg-[#0a0a0a] flex h-screen w-full flex-col px-8 py-12 md:px-16 md:py-24 lg:p-48 xl:px-96 xl:py-64">
+        <h1 className="text-white text-3xl md:text-5xl italic">{headerText}</h1>
         <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText}/>
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-wrap gap-4">
           {
             data.bookmarks.map((bookmark, index) => (
               <div className="flex flex-row items-center gap-2">
