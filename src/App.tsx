@@ -20,19 +20,21 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const focusedSearch = document.activeElement === inputRef.current
-      if (focusedSearch && e.key === "Enter") {
-        Search()
-        return
-      }
       if (e.key === "Escape") {
         setKeystrokes([])
         setPlaceholderText(placeholderBase)
+        inputRef.current?.blur();
         return
       }
-      if (e.key === "/") {
+      if (e.key === "/" && !focusedSearch) {
         e.preventDefault()
         inputRef.current?.focus()
-      } else if (e.key.length === 1) {
+      }
+      if (e.key === "Enter" && focusedSearch) {
+        Search()
+        return
+      }
+      if (e.key.length === 1 && !focusedSearch) {
         const nextKeystrokes = [...keystrokes, e.key]
         const match = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
         if (match) {
