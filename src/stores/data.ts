@@ -1,9 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Bookmark, SearchEngine, StartpageConfig } from "./types";
-import type { getRandomHeaderText } from "./helpers";
+import type { Bookmark, SearchEngine, StartpageConfig } from "../types";
 
-export interface StoreState {
+export interface DataStoreState {
   data: StartpageConfig;
   setData: (data: StartpageConfig) => void;
   addHeaderText: (text: string) => void;
@@ -12,7 +11,7 @@ export interface StoreState {
   getRandomHeaderText: () => string;
 }
 
-export const useStore = create<StoreState>()(
+export const useDataStore = create<DataStoreState>()(
   persist(
     (set, get) => ({
       data: {

@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Bookmark } from "./types";
-import { useStore } from "./store";
+import { useDataStore } from "./stores/data";
+import { usePageStore } from "./stores/page";
 
 export default function App() {
-  const data = useStore((state) => state.data)
-  const [headerText] = useState(() => useStore.getState().getRandomHeaderText())
+  const data = useDataStore((state) => state.data)
+  const [headerText] = useState(() => useDataStore.getState().getRandomHeaderText())
   const inputRef = useRef<HTMLInputElement>(null)
   const placeholderBase = "press / to search"
   const [placeholderText, setPlaceholderText] = useState(placeholderBase)
-  const [keystrokes, setKeystrokes] = useState([] as string[])
+  const keystrokes = usePageStore((state) => state.keystrokes)
+  const appendKeystroke = usePageStore((state) => state.appendKeystroke)
+  const clearKeystrokes = usePageStore((state) => state.clearKeystrokes)
 
   function Search() {
     const query = inputRef.current?.value
@@ -21,7 +24,7 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       const focusedSearch = document.activeElement === inputRef.current
       if (e.key === "Escape") {
-        setKeystrokes([])
+        clearKeystrokes()
         setPlaceholderText(placeholderBase)
         inputRef.current?.blur();
         return
@@ -38,14 +41,14 @@ export default function App() {
         const nextKeystrokes = [...keystrokes, e.key]
         const match = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
         if (match) {
-          setKeystrokes([])
+          clearKeystrokes()
           setPlaceholderText(`Redirecting to ${match.name}...`)
           window.location.href = match.url
           return
         }
         const sequenceMatch = data.bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
         if (sequenceMatch === undefined) {
-          setKeystrokes([])
+          clearKeystrokes()
           if (nextKeystrokes.length != 1) {
             setPlaceholderText(`FailFast: No more matching shortcuts [${nextKeystrokes.join(",")}]`)
             setTimeout(() => {
@@ -55,6 +58,7 @@ export default function App() {
           return
         }
         setKeystrokes(nextKeystrokes)
+        // TODO: rework with append
         setPlaceholderText(`[${nextKeystrokes.join(",")}]`)
       }
     }
