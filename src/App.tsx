@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { useDataStore } from "./stores/data";
 import { usePageStore } from "./stores/page";
 import Bookmark from "./components/Bookmark";
+import { useShallow } from "zustand/shallow";
 
 export default function App() {
   const data = useDataStore((state) => state.data)
   const [headerText] = useState(() => useDataStore.getState().getRandomHeaderText())
   const inputRef = useRef<HTMLInputElement>(null)
   const placeholderBase = "press / to search"
-  const [placeholderText, setPlaceholderText] = useState(placeholderBase)
-  const appendKeystroke = usePageStore((state) => state.appendKeystroke)
-  const clearKeystrokes = usePageStore((state) => state.clearKeystrokes)
+  const placeholderText = usePageStore((state) => state.placeholderText)
+  const [setPlaceholderText, appendKeystroke, clearKeystrokes] = usePageStore(useShallow((state) => [state.setPlaceholderText, state.appendKeystroke, state.clearKeystrokes]))
 
   function Search() {
     const query = inputRef.current?.value
@@ -39,15 +39,15 @@ export default function App() {
       if (e.key.length === 1 && !focusedSearch) {
         appendKeystroke(e.key)
         const nextKeystrokes = usePageStore.getState().keystrokes
-        const match = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
-        if (match) {
+        const exactMatch = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
+        if (exactMatch) {
           clearKeystrokes()
-          setPlaceholderText(`Redirecting to ${match.name}...`)
-          window.location.href = match.url
+          setPlaceholderText(`Redirecting to ${exactMatch.name}...`)
+          window.location.href = exactMatch.url
           return
         }
-        const sequenceMatch = data.bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
-        if (sequenceMatch === undefined) {
+        const currentSequenceMatch = data.bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
+        if (currentSequenceMatch === undefined) {
           clearKeystrokes()
           if (nextKeystrokes.length != 1) {
             setPlaceholderText(`FailFast: No more matching shortcuts [${nextKeystrokes.join(",")}]`)
