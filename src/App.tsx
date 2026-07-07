@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { Bookmark } from "./types";
+import { useEffect, useRef, useState } from "react";
 import { useDataStore } from "./stores/data";
 import { usePageStore } from "./stores/page";
+import Bookmark from "./components/Bookmark";
 
 export default function App() {
   const data = useDataStore((state) => state.data)
@@ -9,7 +9,6 @@ export default function App() {
   const inputRef = useRef<HTMLInputElement>(null)
   const placeholderBase = "press / to search"
   const [placeholderText, setPlaceholderText] = useState(placeholderBase)
-  const keystrokes = usePageStore((state) => state.keystrokes)
   const appendKeystroke = usePageStore((state) => state.appendKeystroke)
   const clearKeystrokes = usePageStore((state) => state.clearKeystrokes)
 
@@ -38,7 +37,8 @@ export default function App() {
         return
       }
       if (e.key.length === 1 && !focusedSearch) {
-        const nextKeystrokes = [...keystrokes, e.key]
+        appendKeystroke(e.key)
+        const nextKeystrokes = usePageStore.getState().keystrokes
         const match = data.bookmarks.find(b => b.shortcut.join("") === nextKeystrokes.join(""))
         if (match) {
           clearKeystrokes()
@@ -57,8 +57,6 @@ export default function App() {
           }
           return
         }
-        setKeystrokes(nextKeystrokes)
-        // TODO: rework with append
         setPlaceholderText(`[${nextKeystrokes.join(",")}]`)
       }
     }
@@ -66,34 +64,14 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   })
 
-  function formatBookmarkTitle(bookmark: Bookmark): ReactNode {
-    let shortcutIndex = 0
-
-    return (
-      <>
-        {bookmark.name.split("").map((char, index) => {
-          if (char === bookmark.shortcut[shortcutIndex]) {
-            shortcutIndex++
-            return <b key={index}>{char}</b>
-          }
-
-          return <span key={index}>{char}</span>
-        })}
-      </>
-    )
-  }
-
   return (
     <div className="bg-[#0a0a0a] flex h-screen w-full flex-col px-8 py-12 md:px-16 md:py-24 lg:p-48 xl:px-96 xl:py-64">
         <h1 className="text-white text-3xl md:text-5xl italic">{headerText}</h1>
         <input ref={inputRef} type="text" className="text-white w-full h-12 outline-0 font-mono" placeholder={placeholderText}/>
         <div className="flex flex-wrap gap-4">
           {
-            data.bookmarks.map((bookmark, index) => (
-              <div className="flex flex-row items-center gap-2">
-                <img src={bookmark.icon} className="h-4"/>
-                <a key={index} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>
-              </div>
+            data.bookmarks.map((bookmark) => (
+              <Bookmark bookmark={bookmark}/>
             ))
           }
         </div>
