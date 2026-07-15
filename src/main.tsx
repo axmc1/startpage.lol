@@ -1,10 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import Startpage from './Startpage.tsx'
+import { Route } from 'wouter'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Route path="/" component={Startpage}/>
   </StrictMode>,
 )

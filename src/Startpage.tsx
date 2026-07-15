@@ -4,7 +4,7 @@ import { usePageStore } from "./stores/page";
 import Bookmark from "./components/Bookmark";
 import { useShallow } from "zustand/shallow";
 
-export default function App() {
+export default function Startpage() {
   const data = useDataStore((state) => state.data)
   const [headerText] = useState(() => useDataStore.getState().getRandomHeaderText())
   const inputRef = useRef<HTMLInputElement>(null)
