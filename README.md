@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Startpage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Startpage is a project heavily inspired by [fmhy.net/startpage](https://fmhy.net/startpage). It aims to be a simple, keyboard-first interface for new tabs, making better use of space that is usually empty.
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="img/index.png" width="45%" />
+  <img src="img/edit.png" width="45%" />
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> [!note]
+> Startpage is still under development and stuff may change before v1.
 
-## React Compiler
+## Public Instance
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+TBD
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Simple UI
+- Keybindings for bookmarks and search
+- Edit page for header texts, bookmarks, and the search engine.
+- Configuration saved in local storage
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Planned
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Docker image
+- Browser extension for rewriting new tab page
+- Multiple search engines
+- Syncing configuration across devices
+- Overwrite default configuration
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Usage
+
+- `/` to focus search
+  - search `/edit` to open edit page
+- Typing a bookmark's shortcut will open it, when search is not focused
+- `Esc` to unfocus search and clear shortcut input
+- In edit page, `Tab` + `Enter` to return to startpage
+
+## Customization
+
+In the `/edit` page you can customize the following:
+
+- Adding header texts, deleting header texts
+- Adding bookmarks, deleting bookmarks
+- Changing the search engine
+
+## Installation
+
+Prerequisites:
+- Node.js
+- pnpm (npm would probably work too, not tested)
+
+```sh
+# 1. Clone the repository
+git clone https://github.com/axmc/startpage.git
+
+# 2. Install dependencies
+pnpm install
+
+# 3. Start dev server
+pnpm dev
+
+# (optional) 4. Build for production
+pnpm build
+
+# (optional) 5. Preview production build
+pnpm preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Startpage is licensed under the [MIT License](LICENSE).
