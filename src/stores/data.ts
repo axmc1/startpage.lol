@@ -9,6 +9,8 @@ export interface DataStoreState {
   addBookmark: (bookmark: Bookmark) => void;
   setSearchEngine: (searchEngine: SearchEngine) => void;
   getRandomHeaderText: () => string;
+  deleteHeaderText: (index: number) => void
+  deleteBookmark: (id: string) => void
 }
 
 export const useDataStore = create<DataStoreState>()(
@@ -21,21 +23,21 @@ export const useDataStore = create<DataStoreState>()(
             id: "1",
             name: "hackernews",
             url: "https://news.ycombinator.com/",
-            icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg",
+            iconUrl: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/hacker-news.svg",
             shortcut: ["h", "n"],
           },
           {
             id: "2",
             name: "github",
             url: "https://github.com/",
-            icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/github.svg",
+            iconUrl: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/github.svg",
             shortcut: ["g", "h"],
           },
           {
             id: "3",
             name: "mdn",
             url: "https://developer.mozilla.org/",
-            icon: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/mdn.svg",
+            iconUrl: "",
             shortcut: ["m", "d", "n"],
           },
         ],
@@ -52,8 +54,17 @@ export const useDataStore = create<DataStoreState>()(
         data: { ...state.data, bookmarks: [...state.data.bookmarks, bookmark] },
       })),
       setSearchEngine: (searchEngine: SearchEngine) => set((state) => ({ data: { ...state.data, searchEngine } })),
-      getRandomHeaderText: () => get().data.headerTexts[Math.floor(Math.random() * get().data.headerTexts.length)]
+      getRandomHeaderText: () => get().data.headerTexts[Math.floor(Math.random() * get().data.headerTexts.length)],
+      deleteHeaderText: (index: number) => set((state) => {
+        const newHeaderTexts = [...state.data.headerTexts];
+        newHeaderTexts.splice(index, 1);
+        return { data: { ...state.data, headerTexts: newHeaderTexts } };
+      }),
+      deleteBookmark: (id: string) => set((state) => {
+        const newBookmarks = state.data.bookmarks.filter((bookmark) => bookmark.id !== id);
+        return { data: { ...state.data, bookmarks: newBookmarks } };
+      }),
     }),
-    { name: "startpage-store" },
+    { name: "startpage-store", version: 0 },
   ),
 );

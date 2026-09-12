@@ -1,30 +1,35 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDataStore } from "./stores/data";
 import { usePageStore } from "./stores/page";
 import Bookmark from "./components/Bookmark";
 import { useShallow } from "zustand/shallow";
+import { useLocation } from "wouter";
 
 export default function Startpage() {
   const data = useDataStore((state) => state.data)
   const [headerText] = useState(() => useDataStore.getState().getRandomHeaderText())
   const inputRef = useRef<HTMLInputElement>(null)
-  const placeholderBase = "press / to search"
   const placeholderText = usePageStore((state) => state.placeholderText)
-  const [setPlaceholderText, appendKeystroke, clearKeystrokes] = usePageStore(useShallow((state) => [state.setPlaceholderText, state.appendKeystroke, state.clearKeystrokes]))
+  const [setPlaceholderText, clearPlaceholderText, appendKeystroke, clearKeystrokes] = usePageStore(useShallow((state) => [state.setPlaceholderText, state.clearPlaceholderText, state.appendKeystroke, state.clearKeystrokes]))
+  const [, setLocation] = useLocation()
 
-  function Search() {
+  const search = useCallback(() => {
     const query = inputRef.current?.value
     if (!query) return
+    if (query === "/edit") {
+      setLocation(query)
+      return
+    }
     setPlaceholderText(`Searching with ${data.searchEngine.name}..`)
     window.location.href = data.searchEngine.url.replace("%s", encodeURIComponent(query))
-  }
+  }, [data.searchEngine.name, data.searchEngine.url, setPlaceholderText, setLocation])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const focusedSearch = document.activeElement === inputRef.current
       if (e.key === "Escape") {
         clearKeystrokes()
-        setPlaceholderText(placeholderBase)
+        clearPlaceholderText()
         inputRef.current?.blur();
         return
       }
@@ -33,7 +38,7 @@ export default function Startpage() {
         inputRef.current?.focus()
       }
       if (e.key === "Enter" && focusedSearch) {
-        Search()
+        search()
         return
       }
       if (e.key.length === 1 && !focusedSearch) {
@@ -44,6 +49,9 @@ export default function Startpage() {
           clearKeystrokes()
           setPlaceholderText(`Redirecting to ${exactMatch.name}...`)
           window.location.href = exactMatch.url
+          setTimeout(() => {
+            clearPlaceholderText()
+          }, 1500)
           return
         }
         const currentSequenceMatch = data.bookmarks.find(b => b.shortcut[nextKeystrokes.length - 1] === e.key)
@@ -52,7 +60,7 @@ export default function Startpage() {
           if (nextKeystrokes.length != 1) {
             setPlaceholderText(`FailFast: No more matching shortcuts [${nextKeystrokes.join(",")}]`)
             setTimeout(() => {
-              setPlaceholderText(placeholderBase)
+              clearPlaceholderText()
             }, 1500)
           }
           return
@@ -62,7 +70,7 @@ export default function Startpage() {
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  })
+  }, [appendKeystroke, clearKeystrokes, clearPlaceholderText, data.bookmarks, search, setPlaceholderText])
 
   return (
     <div className="bg-[#0a0a0a] flex h-screen w-full flex-col px-8 py-12 md:px-16 md:py-24 lg:p-48 xl:px-96 xl:py-64">
@@ -71,7 +79,7 @@ export default function Startpage() {
         <div className="flex flex-wrap gap-4">
           {
             data.bookmarks.map((bookmark) => (
-              <Bookmark bookmark={bookmark}/>
+              <Bookmark key={bookmark.id} bookmark={bookmark}/>
             ))
           }
         </div>

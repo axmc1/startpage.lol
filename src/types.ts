@@ -2,7 +2,7 @@ export type Bookmark = {
   id: string
   name: string
   url: string
-  icon: string
+  iconUrl: string
   shortcut: string[]
 }
 

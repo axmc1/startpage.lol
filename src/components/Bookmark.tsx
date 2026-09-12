@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { usePageStore } from "../stores/page"
 import type { Bookmark } from "../types"
+import { getIconUrl } from "../utils"
 
 export type Props = {
   bookmark: Bookmark
@@ -27,7 +28,7 @@ export default function Bookmark({ bookmark }: Props) {
   const keystrokes = usePageStore((state) => state.keystrokes)
   return (
     <div className="flex flex-row items-center gap-2">
-      <img src={bookmark.icon} className="h-4"/>
+      <img src={getIconUrl(bookmark)} className="h-4"/>
       <a key={bookmark.id} href={bookmark.url} className={'hover:underline ' + (bookmark.shortcut.join("").startsWith(keystrokes.join("")) ? "" : "opacity-30")}>{formatBookmarkTitle(bookmark)}</a>
     </div>
   )
