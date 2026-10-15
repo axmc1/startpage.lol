@@ -1,6 +1,8 @@
 # Startpage
 
-Startpage is a project heavily inspired by [fmhy.net/startpage](https://fmhy.net/startpage). It aims to be a simple, keyboard-first interface for new tabs, making better use of space that is usually empty.
+Startpage is a project heavily inspired by [fmhy.net/startpage](https://fmhy.net/startpage).
+It aims to be a simple, keyboard-first interface for new tabs, making better
+use of space that is usually empty.
 
 <p align="center">
   <img src="img/index.png" width="45%" />
@@ -20,10 +22,10 @@ TBD
 - Keybindings for bookmarks and search
 - Edit page for header texts, bookmarks, and the search engine.
 - Configuration saved in local storage
+- Docker image for self-hosting
 
 ### Planned
 
-- Docker image
 - Browser extension for rewriting new tab page
 - Multiple search engines
 - Syncing configuration across devices
@@ -48,6 +50,7 @@ In the `/edit` page you can customize the following:
 ## Installation
 
 Prerequisites:
+
 - Node.js
 - pnpm (npm would probably work too, not tested)
 
