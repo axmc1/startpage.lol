@@ -9,5 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/setup@v2
+        with:
+          version: 12.11.0
       - run: pnpm install
       - run: pnpm lint
